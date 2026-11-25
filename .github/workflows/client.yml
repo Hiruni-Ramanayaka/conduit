@@ -1,12 +1,17 @@
+# Optimized by ci-cost (https://github.com/mariotavarez/ci-cost)
+# Applied 3 optimizations:
+# - [HIGH] Add npm dependency cache to "lint" job
+# - [HIGH] Add npm dependency cache to "test" job
+# - [MEDIUM] Add concurrency group to "client.yml"
+# Estimated savings: ~10 min/run
+#
 name: Client
-
-on:
-  workflow_dispatch:
+'on':
+  workflow_dispatch: null
   push:
     branches:
       - main
-  pull_request:
-
+  pull_request: null
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -20,18 +25,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
       - name: Install packages
         run: |
-            npm ci
-      - name: run formatter 
+          npm ci
+      - name: run formatter
         run: |
-            npx prettier --check ./src
+          npx prettier --check ./src
       - name: Generate expo types
         run: |
-            npx expo customize tsconfig.json
+          npx expo customize tsconfig.json
       - name: run typecheck
         run: |
-            npm run typecheck
+          npm run typecheck
   test:
     runs-on: ubuntu-latest
     defaults:
@@ -44,9 +50,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: npm
       - name: Install packages
         run: |
-            npm ci
+          npm ci
       - name: run tests
         run: |
-            npm run test
+          npm run test
